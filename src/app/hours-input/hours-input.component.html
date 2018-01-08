@@ -1,6 +1,6 @@
-<form [formGroup] = "form">
+<form [formGroup] = "form" (submit) = "addHours(form.value)">
   <input type="date" name="day" formControlName="day">
   <input type="text" name="begin" formControlName="begin">
   <input type="text" name="end" formControlName="end">
-  <input type="submit">
+  <input type="submit" [disabled]="!form.valid">
 </form>
