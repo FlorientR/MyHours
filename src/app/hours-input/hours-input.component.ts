@@ -13,9 +13,9 @@ export class HoursInputComponent implements OnInit {
 
   ngOnInit() {
     this.form = new FormGroup({
-        day = new FormControl(Date.now()),
-        begin = new FormControl(),
-        end = new FormControl()
+        day: new FormControl(Date.now()),
+        begin: new FormControl(),
+        end: new FormControl()
     });
   }
 
