@@ -57,7 +57,7 @@ export class HoursInputComponent implements OnInit {
         return {'end': false};
     }
 
-    addSession = function(session) {
+    addSession = function (session) {
         console.log(session);
-    }
+    };
 }
