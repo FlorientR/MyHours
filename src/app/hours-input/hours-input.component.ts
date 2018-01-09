@@ -1,19 +1,29 @@
 import {Component, OnInit} from '@angular/core';
 import {FormGroup, FormControl, Validators} from '@angular/forms';
+import {SessionService} from '../session.service';
 
 @Component({
     selector: 'app-hours-input',
     templateUrl: './hours-input.component.html',
-    styleUrls: ['./hours-input.component.css']
+    styleUrls: [
+        './hours-input.component.css',
+        '../../../node_modules/bootstrap/dist/css/bootstrap.min.css'
+    ]
 })
 export class HoursInputComponent implements OnInit {
 
-    constructor() {
-    }
+    constructor(private sessionService: SessionService) {}
 
     form;
+    sessions;
+    total;
 
     ngOnInit() {
+        this.sessionService.updateSessions();
+        this.sessions = this.sessionService.getSessions();
+        this.sessions = this.sessionService.reorderSession(this.sessions);
+        this.total = this.sessionService.getTotal();
+
         this.form = new FormGroup({
             day: new FormControl('', Validators.required),
             begin: new FormControl('', this.beginHoursValidator),
@@ -39,12 +49,12 @@ export class HoursInputComponent implements OnInit {
         if (value.match('^[0-9]{2}h[0-9]{2}$')) {
             const hours = parseInt(value.substr(0, 2), 0);
             const minutes = parseInt(value.substr(3, 2), 0);
-            const totalMinutes = (hours * 60) + minutes;
+
+            const sessionService = new SessionService(null);
+            const totalMinutes = sessionService.getTotalMinutes(value);
 
             const beginValue = control.parent.get('begin').value;
-            const beginHours = parseInt(beginValue.substr(0, 2), 0);
-            const beginMinutes = parseInt(beginValue.substr(3, 2), 0);
-            const totalBeginMinutes = (beginHours * 60) + beginMinutes;
+            const totalBeginMinutes = sessionService.getTotalMinutes(beginValue);
 
             if (
                 (hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60)
@@ -57,7 +67,23 @@ export class HoursInputComponent implements OnInit {
         return {'end': false};
     }
 
-    addSession = function (session) {
-        console.log(session);
-    };
+    addSession = function(session)
+    {
+        this.sessionService.addSession(session);
+        this.sessions = this.sessionService.getSessions();
+        this.total = this.sessionService.getTotal();
+    }
+
+    removeSession = function (indiceSession, indiceDate) {
+        this.sessionService.removeSession(indiceSession, indiceDate);
+        this.sessions = this.sessionService.getSessions();
+        this.total = this.sessionService.getTotal();
+    }
+
+    removeAll = function()
+    {
+        this.sessionService.removeAll();
+        this.sessions = [];
+        this.total = 0;
+    }
 }

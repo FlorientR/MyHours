@@ -1,6 +1,41 @@
-<form [formGroup] = "form" (submit) = "addSession(form.value)">
-  <input type="date" name="day" formControlName="day">
-  <input type="text" name="begin" formControlName="begin">
-  <input type="text" name="end" formControlName="end">
-  <input type="submit" [disabled]="!form.valid">
-</form>
+<div class="col-lg-6 col-lg-offset-3">
+  <form [formGroup] = "form" (submit) = "addSession(form.value)">
+
+    <div class="form-group">
+      <label for="day">Jour</label>
+      <input type="date" id="day" name="day" formControlName="day" class="form-control">
+    </div>
+
+    <div class="form-group">
+      <label for="begin">Heure de début</label>
+      <input type="text" pattern="^[0-9]{2}h[0-9]{2}$" id="begin" name="begin" formControlName="begin" class="form-control" placeholder="08h30">
+    </div>
+
+    <div class="form-group">
+      <label for="end">Heure de fin</label>
+      <input type="text" pattern="^[0-9]{2}h[0-9]{2}$" id="end" name="end" formControlName="end" class="form-control" placeholder="12h00">
+    </div>
+
+    <input type="submit" class="btn btn-primary btn-block" [disabled]="!form.valid">
+  </form>
+
+  <div>
+    <h1>Heure déjà comptabilisée ({{ total | formatMinutes }})</h1>
+    <ul class="list-group">
+      <li *ngFor = "let session of sessions; let indSession = index;" class="list-group-item">
+        {{ session.day | date: 'dd/MM/yyyy' }} ({{ session.total | formatMinutes }})
+        <ul class="list-group">
+          <li *ngFor = "let dates of session.dates; let indDates = index;" class="list-group-item">
+            {{ dates.begin }} à {{ dates.end }} ({{ dates.total | formatMinutes }})
+            <span class="close" (click)="removeSession(indSession, indDates)">
+              <i class="glyphicon glyphicon-remove"></i>
+            </span>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <button class="btn btn-danger btn-block" (click)="removeAll()">
+      Tous supprimer
+    </button>
+  </div>
+</div>
