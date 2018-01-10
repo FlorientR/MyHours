@@ -20,7 +20,7 @@
   </form>
 
   <div>
-    <h1>Heure déjà comptabilisée ({{ total | formatMinutes }})</h1>
+    <h1>Heure{{ total > 60 ? 's' : '' }} déjà comptabilisée{{ total > 60 ? 's' : '' }} ({{ total | formatMinutes }})</h1>
     <ul class="list-group">
       <li *ngFor = "let session of sessions; let indSession = index;" class="list-group-item">
         {{ session.day | date: 'dd/MM/yyyy' }} ({{ session.total | formatMinutes }})
